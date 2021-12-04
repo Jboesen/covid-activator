@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block main %}
+<p class="container">
+
+</p>
+<form action="/register" method="post">
+    <!--Why does the parent stuff not go to the children-->
+    <div class="mb-3">
+        <div>
+            <input autocomplete="off" autofocus class="form-control mx-auto w-25 mb-3" id="name" name="name"
+                placeholder="Full Name Associated With Color" type="text">
+        </div>
+        <div>
+            <input autocomplete="off" class="form-control mx-auto w-25 mb-3" id="coloremail" name="coloremail"
+                placeholder="Color Account Email" type="text">
+        </div>
+        <div>
+            <input class="form-control mx-auto w-25 mb-3" id="colorpw" name="colorpw" placeholder="Color Account Password"
+                type="password">
+        </div>
+        <div>
+            <input class="form-control mx-auto w-25 mb-3" id="confcolorpw" name="confcolorpw"
+                placeholder="Confirmation Color Account Password" type="password">
+        </div>
+        <div>
+            <input class="form-control mx-auto w-25 mb-3" id="pw" name="pw" placeholder="Password" type="password">
+        </div>
+        <div>
+            <input class="form-control mx-auto w-25 mb-3" id="confpw" name="confpw" placeholder="Confirmation Password"
+                type="password">
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-primary" type="submit">Register</button>
+    </div>
+</form>
+{% endblock %}

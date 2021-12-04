@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Activated
+{% endblock %}
+
+{% block main %}
+<div>
+{% if success %}
+<h class="text-light">Kit Activated Successfully!</h>
+{% else %}
+<h>Oops, something went wrong...</h>
+{% endif %}
+</div>
+{% endblock %}

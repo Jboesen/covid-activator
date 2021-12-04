@@ -1,0 +1,42 @@
+/* Size for brand */
+nav .navbar-brand {
+  font-size: xx-large;
+  color: #211d4f;
+}
+
+/* Colors for brand */
+
+.section {
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.5rem;
+  text-align: "center";
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  text-align: center;
+  width: 90%;
+}
+
+.centered-block {
+  display: inline-block;
+}
+
+.centered-list {
+  text-align: left;
+  font-style: italic;
+}
+
+.box-letter {
+  padding: 10px;
+  border: 2px solid white;
+}
+
+input[type="file"] {
+  color: rgba(0, 0, 0, 0);
+}

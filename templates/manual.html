@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Activate
+{% endblock %}
+
+{% block main %}
+{% if confirmation %}
+<h3 class="text-light">Please double-check the barcode and confirmation number:</h3>
+{% endif %}
+<form action="/manual" method="post">
+    <div class="mb-3">
+        {% if barcode %}
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" style="float:center" id="barcode" name="barcode"
+                placeholder="D-0123456789" value="{{barcode}}" type="text">
+        {% else %}
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" style="float:center" id="barcode" name="barcode"
+        placeholder="D-0123456789" type="text">
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {% if acc_num %}
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="acc_num" name="acc_num"
+            placeholder="C-12345" type="text" value="{{acc_num}}">
+        {% else %}
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="acc_num" name="acc_num"
+        placeholder="C-12345" type="text">
+        {% endif %}
+    </div>
+    <div class="container text-light mb-3" style="max-width:50%">
+        {% if confirmation %}
+        <div hidden>
+            <input type="checkbox" value="normal" name="normal" checked> By checking this box, I agree that I'm not experiencing any symptoms of COVID-19 as Color defines 
+            <a href="https://home.color.com/covid/activation/pre-test">here.</a>
+            <a>I agree to all the terms and conditions that I would agree to if I were manually activating Harvard's COVID-19 Test.
+            The personal information Color has stored about me (which I can see </a>
+            <a href="https://home.color.com/covid/activation/test-info">here)</a> 
+            <a> is still accurate.</a>
+        </div>
+        {% else %}
+        <input type="checkbox" value="normal" name="normal"> By checking this box, I agree that I'm not experiencing any symptoms of COVID-19 as Color defines 
+        <a href="https://home.color.com/covid/activation/pre-test">here.</a>
+        <a>I agree to all the terms and conditions that I would agree to if I were manually activating Harvard's COVID-19 Test.
+        The personal information Color has stored about me (which I can see </a>
+        <a href="https://home.color.com/covid/activation/test-info">here)</a> 
+        <a> is still accurate.</a>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {% if confirmation %}
+        <button class="btn btn-primary" type="submit">Confirm</button>
+        {% else %}
+        <button class="btn btn-primary" type="submit">Submit</button>
+        {% endif %}
+    </div>
+    <div>
+        <button class="btn btn-primary" name="ocr" value="ocr" type="submit">Text Recognition</button>
+    </div>
+</form>
+{% endblock %}

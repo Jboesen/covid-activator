@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Activate
+{% endblock %}
+
+{% block main %}
+
+<div class="container text-light mb-3" style="max-width:50%">
+    <!-- <input type="checkbox" name="normal"> By checking this box, I agree that I'm not experiencing any symptoms of COVID-19 as Color defines  -->
+    <a> By clicking upload, I agree that I'm not experiencing any symptoms of COVID-19 as Color defines 
+    <a href="https://home.color.com/covid/activation/pre-test">here.</a>
+    <a>I agree to all the terms and conditions that I would agree to if I were manually activating Harvard's COVID-19 Test.
+    The personal information Color has stored about me (which I can see</a>
+    <a href="https://home.color.com/covid/activation/test-info">here)</a>
+    <a> is still accurate.</a>
+</div>
+
+<form method=post enctype=multipart/form-data>
+  <p><input type=file name=file>
+     <input type=submit value=Upload>
+</form>
+
+{% if img_src %}
+  <img src="{{ img_src }}">
+{% endif %}
+
+<form action="/" method="post" class="text-light">
+    <div >
+    <button class="btn btn-primary" name="manual" value="manual" type="submit">Manual Input</button>
+    </div>
+</form>
+{% endblock %}
