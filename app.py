@@ -4,12 +4,12 @@ from flask import Flask, redirect, render_template, request, session, flash, mak
 from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import activate_test, login_required, ocr_core
+from helpers import activate_test, login_required, ocr_core, get_pw
 import os
 
 # Configure application
 app = Flask(__name__)
-UPLOAD_FOLDER = '/uploads'
+UPLOAD_FOLDER = "/uploads"
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -17,7 +17,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 Session(app)
 
 # Configure CS50 Library to use SQLite database
@@ -27,22 +27,22 @@ db = SQL("sqlite:///covid.db")
 # import our OCR function
 
 # define a folder to store and later serve the images
-UPLOAD_FOLDER = '/static/uploads/'
+UPLOAD_FOLDER = "/static/uploads/"
 
 # allow files of a specific type
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'heic'])
+ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg", "heic"])
 
 
 def allowed_file(filename):
     # https://stackabuse.com/pytesseract-simple-python-optical-character-recognition/
     # return true if is in file format and extension is a-ok
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return "." in filename and \
+           filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.after_request
 def after_request(response):
-    """Ensure responses aren't cached"""
+    """Ensure responses aren"t cached"""
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
@@ -51,7 +51,7 @@ def after_request(response):
 # route and function to handle the upload page
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 @ login_required
 def ocr():
     if request.method == "POST":
@@ -59,23 +59,22 @@ def ocr():
         # print("wot")
         # check if they want manual
         if request.form.get("manual") is not None:
-            # switch to manual
+            # switch to
             return render_template("manual.html")
         # check if okie-dokie
-        print(request.form.get("normal"))
         # if request.form.get("normal") is None:
         #     print("normal")
         #     flash("Please use the Color website to activate your test")
         #     return render_template("ocr.html")
         # check if there is a file in the request
-        if 'file' not in request.files:
+        if "file" not in request.files:
             flash("No file selected")
-            return render_template('ocr.html')
-        file = request.files['file']
+            return render_template("ocr.html")
+        file = request.files["file"]
         # if no file is selected
-        if file.filename == '':
+        if file.filename == "":
             flash("No file selected1")
-            return render_template('ocr.html')
+            return render_template("ocr.html")
         if file and allowed_file(file.filename):
             # file is a FileStorage object
             # store FileStorage into uploads folder
@@ -114,10 +113,10 @@ def ocr():
             return render_template("manual.html", barcode=barcode, acc_num=acc_num, confirmation=True)
         flash("Something went wrong...")
         return render_template("ocr.html")
-    return render_template('ocr.html')
+    return render_template("ocr.html")
 
 
-@ app.route("/manual", methods=['GET', 'POST'])
+@ app.route("/manual", methods=["GET", "POST"])
 @ login_required
 def manual():
     print("manual...")
@@ -129,28 +128,29 @@ def manual():
         if request.form.get("ocr") is not None:
             print("switch to auto")
             return render_template("ocr.html")
-        if request.form.get("normal") is None:
-            print("manual is not normal")
-            flash("Please use the Color website to activate your test")
-            return render_template("manual.html")
+        # if request.form.get("normal") is None:
+        #     print("manual is not normal")
+        #     flash("Please use the Color website to activate your test")
+        #     return render_template("manual.html")
         print("passed over the normal check")
         print(request.form.get("ocr"))
         print("passed over the normal check")
         # if not normal fill-out
         if not request.form.get("barcode") or not request.form.get("acc_num"):
             flash("One or more fields are blank that shouldn't be!")
-            print("Place 2 ")
             return render_template("manual.html")
         barcode = request.form.get("barcode")
         acc_num = request.form.get("acc_num")
-        print("Place 1")
         login_info = db.execute(
             "SELECT * FROM users WHERE id = ?", session["user_id"])
         email = login_info[0]["coloremail"]
         colorpw = login_info[0]["colorpw"]
-        activate_test(email, colorpw, barcode, acc_num)
+        decrypted = get_pw(colorpw)
+        activate_test(email, decrypted, barcode, acc_num)
         # # return render_template("activated.html", success=True)
-        return render_template("activated.html", success=True)
+        if activate_test(email, decrypted, barcode, acc_num):
+            return render_template("activated.html", success=True)
+        return render_template("activated.html")
     return render_template("manual.html")
 
 
@@ -250,11 +250,11 @@ def register():
     return render_template("register.html")
 
 
-@ app.route('/setcookie', methods=['POST', 'GET'])
+@ app.route("/setcookie", methods=["POST", "GET"])
 def set_key(key):
-    resp = make_response(render_template('login.html'))
-    resp.set_cookie('key', key, expires=None,
-                    secure=True, samesite='Strict')
+    resp = make_response(render_template("login.html"))
+    resp.set_cookie("key", key, expires=None,
+                    secure=True, samesite="Strict")
     return resp
 
 
