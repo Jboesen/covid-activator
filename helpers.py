@@ -89,37 +89,50 @@ def activate_test(email, decrypted, barcode, acc_num):
     driver.get("https://home.color.com/sign-in?next=%2Fcovid%2Factivation")
     driver.find_element_by_name("email").send_keys(email)
     driver.find_element_by_name("password").send_keys(decrypted)
-    # can I just plug in all these class elements?
-    login_bt_cls = "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-sizeLarge MuiButton-fullWidth"
+    # login
+    login_bt_cls = "MuiButton-fullWidth"
     driver.find_element_by_class_name(login_bt_cls).click()
-    person_bt_cls = "MuiButtonBase-root MuiButton-root MuiButton-outlined jss268 MuiButton-outlinedPrimary"
+    # select person
+    person_bt_cls = "jss268"
     driver.find_element_by_class_name(person_bt_cls).click()
+    
+    # choose to activate
+    activate_bt = "MuiButton-contained"
+    driver.find_element_by_class_name(activate_bt).click()
 
-    start_bt_cls = "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary Link_Link__2jUr8"
-    driver.find_element_by_class_name(start_bt_cls).click()
+    # start survey
+    mui_prim = "MuiButton-containedPrimary"
+    driver.find_element_by_class_name(mui_prim).click()
+    
+    # no symptoms
+    no_symp_bt = "QuizChoice"
+    driver.find_element_by_class_name(no_symp_bt)[1].click()
 
-    no_bt_cls = "QuizChoice tl w-100 flex justify-between bg-white pointer hover-opacity-0-75"
-    driver.find_element_by_class_name(no_bt_cls).click()
-
-    cont_bt_cls = "MuiButtonBase-root MuiButton-root MuiButton-contained ActionButtons_NextButton__MEOPx MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-sizeLarge"
-    driver.find_element_by_class_name(cont_bt_cls).click()
-
+    # continue
+    cont_bt = "MuiButton-containedSizeLarge"
+    driver.find_element_by_class_name("MuiButton-containedSizeLarge").click()
+    
     driver.find_element_by_name("primaryConsentIsAccepted").click()
     driver.find_element_by_name("additionalConsents[0]").click()
     driver.find_element_by_name("additionalConsents[1]").click()
     driver.find_element_by_name("additionalConsents[2]").click()
 
-    cont_bt_cls2 = "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-sizeLarge"
-    driver.find_element_by_class_name(cont_bt_cls2).click()
+    # continue from checkboxes and demos
+    driver.find_element_by_class_name(mui_prim).click()
+    driver.find_element_by_class_name(mui_prim).click()
+    driver.find_element_by_class_name("MuiButton-containedSizeLarge").click()
 
-    driver.find_element_by_class_name(cont_bt_cls2).click()
-    conf_cont_bt_cls = "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
-    driver.find_element_by_class_name(conf_cont_bt_cls).click()
-
+    # put in codes
     driver.find_element_by_name("kit_barcode").send_keys(barcode)
     driver.find_element_by_name("accession_number").send_keys(acc_num)
-    driver.find_element_by_class_name(cont_bt_cls2).click()
-    driver.find_element_by_class_name(conf_cont_bt_cls).click()
-    if driver.find_element_by_class_name("MuiTypography-root jss2 MuiTypography-h1").text == "You’ve activated your kit! Now, collect a sample.":
+    
+    # double confirmation
+    driver.find_element_by_class_name(mui_prim).click()
+    # I can't figure out a better way to to this besides xpath which I don't get
+    for x in driver.find_element_by_class_name(mui_prim):
+        if x.get_attribute("innerHTML") == "Confirm and Continue":
+            x.click()
+    # see if color is happy
+    if driver.find_element_by_class_name("jss2").get_attribute("innerHTML") == "You’ve activated your kit! Now, collect a sample.":
         return True
     return False
