@@ -78,13 +78,14 @@ def get_pw(enc_cpw):
 def activate_test(email, decrypted, barcode, acc_num):
     print("activate_test called")
     # https://www.youtube.com/watch?v=rfdNIOYGYVI&t=1114s
-    op = webdriver.ChromeOption()
-    op.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    op.add_argument("--headless")
-    op.add_argument("--no-sandbox")
-    op.add_argument("--disable-dev-sh-usage")
-    driver = webdriver.Chrome(executable_path=os.environ.get(
-        "CHROMEDRIVER_PATH"), chrome_options=op)
+#     op = webdriver.ChromeOption()
+#     op.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+#     op.add_argument("--headless")
+#     op.add_argument("--no-sandbox")
+#     op.add_argument("--disable-dev-sh-usage")
+#     driver = webdriver.Chrome(executable_path=os.environ.get(
+#         "CHROMEDRIVER_PATH"), chrome_options=op)
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
     driver.get("https://home.color.com/sign-in?next=%2Fcovid%2Factivation")
     driver.find_element_by_name("email").send_keys(email)
     driver.find_element_by_name("password").send_keys(decrypted)
