@@ -1,9 +1,10 @@
 
+from cryptography.fernet import Fernet
 from flask import redirect, request, session
 from functools import wraps
-from selenium import webdriver
 import os
 import pytesseract
+from selenium import webdriver
 try:
     from PIL import Image
 except ImportError:
@@ -62,21 +63,23 @@ def ocr_core(filename):
     return text
 
 
-def activate_test(email, enc_cpw, barcode, acc_num):
-    driver = webdriver.Chrome("/usr/bin/chromedriver")
-    driver.get("https://home.color.com/sign-in?next=%2Fcovid%2Factivation")
-    driver.find_element_by_name("email").send_keys(email)
+def get_pw(enc_cpw):
     key = request.cookies.get('key')
-    # password
-    # idk et this does
+    key.encode()
     f = Fernet(key)
     decrypted = f.decrypt(enc_cpw)
     cpw = decrypted.decode("utf-8")
-    driver.find_element_by_name("password").send_keys(cpw)
+    return cpw
+
+
+def activate_test(email, decrypted, barcode, acc_num):
+    driver = webdriver.Chrome("/usr/bin/chromedriver")
+    driver.get("https://home.color.com/sign-in?next=%2Fcovid%2Factivation")
+    driver.find_element_by_name("email").send_keys(email)
+    driver.find_element_by_name("password").send_keys(decrypted)
     # can I just plug in all these class elements?
     login_bt_cls = "MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-sizeLarge MuiButton-fullWidth"
     driver.find_element_by_class_name(login_bt_cls).click()
-
     person_bt_cls = "MuiButtonBase-root MuiButton-root MuiButton-outlined jss268 MuiButton-outlinedPrimary"
     driver.find_element_by_class_name(person_bt_cls).click()
 
@@ -106,6 +109,3 @@ def activate_test(email, enc_cpw, barcode, acc_num):
     driver.find_element_by_class_name(cont_bt_cls2).click()
     # driver.find_element_by_class_name(conf_cont_bt_cls).click()
 
-
-def recognize_code():
-    pass
