@@ -1,5 +1,6 @@
 from cryptography.fernet import Fernet
 from cs50 import SQL
+from datetime import datetime, timedelta
 from flask import Flask, redirect, render_template, request, session, flash, make_response
 from flask_session import Session
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -55,13 +56,12 @@ def after_request(response):
 @ login_required
 def ocr():
     if request.method == "POST":
-        print("post ocr")
-        # print("wot")
         # check if they want manual
         if request.form.get("manual") is not None:
             # switch to
             return render_template("manual.html")
         # check if okie-dokie
+        # like I said in the html, this is finnicky so I am holding off on putting it in there
         # if request.form.get("normal") is None:
         #     print("normal")
         #     flash("Please use the Color website to activate your test")
@@ -119,22 +119,15 @@ def ocr():
 @ app.route("/manual", methods=["GET", "POST"])
 @ login_required
 def manual():
-    print("manual...")
     if request.method == "POST":
-        print("post    ")
-        # return "done"
         # if they want to switch input method
         # normal check works
         if request.form.get("ocr") is not None:
-            print("switch to auto")
             return render_template("ocr.html")
         # if request.form.get("normal") is None:
         #     print("manual is not normal")
         #     flash("Please use the Color website to activate your test")
         #     return render_template("manual.html")
-        print("passed over the normal check")
-        print(request.form.get("ocr"))
-        print("passed over the normal check")
         # if not normal fill-out
         if not request.form.get("barcode") or not request.form.get("acc_num"):
             flash("One or more fields are blank that shouldn't be!")
@@ -163,6 +156,9 @@ def login():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         error = None
+
+        if request.form.get("del") is not None:
+            return redirect("/delete")
 
         # Ensure username was submitted
         if not request.form.get("email"):
@@ -250,10 +246,48 @@ def register():
     return render_template("register.html")
 
 
+@ app.route("/delete", methods=["GET", "POST"])
+def delete():
+    """Log user in"""
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        error = None
+
+        # Ensure username was submitted
+        if not request.form.get("name"):
+            error = "Must provide name"
+
+        # Ensure password was submitted
+        elif not request.form.get("coloremail"):
+            error = "Must provide email"
+
+        # Query database for username
+        rows = db.execute("SELECT * FROM users WHERE coloremail = ? AND name = ?",
+                          request.form.get("email"), request.form.get("name"))
+
+        # Display error
+        if error:
+            flash(error)
+            return render_template("delete.html")
+
+        if len(rows) == 1:
+            db.execute("DELETE FROM users WHERE coloremail = ? AND name = ?",
+                       request.form.get("email"), request.form.get("name"))
+
+        flash("Successfully deleted account")
+        return render_template("login.html")
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    return render_template("delete.html")
+
+
 @ app.route("/setcookie", methods=["POST", "GET"])
 def set_key(key):
+    # https://stackoverflow.com/questions/26613435/python-flask-not-creating-cookie-when-setting-expiration
     resp = make_response(render_template("login.html"))
-    resp.set_cookie("key", key, expires=None,
+    expire_date = datetime.datetime.now()
+    expire_date = expire_date + datetime.timedelta(days=365*4)
+    resp.set_cookie("key", key, expires=expire_date,
                     secure=True, samesite="Strict")
     return resp
 
