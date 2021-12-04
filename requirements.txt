@@ -22,6 +22,7 @@ colorama==0.4.3
 compare50==1.2.4
 cryptography==35.0.0
 cs50==7.0.2
+CS50-VSIX-Client==1.0.0
 cssselect2==0.4.1
 defusedxml==0.7.1
 distlib==0.3.3
@@ -33,6 +34,7 @@ Flask==1.1.4
 Flask-Session==0.4.0
 geckodriver-autoinstaller==0.1.0
 greenlet==1.1.2
+gunicorn==20.1.0
 h11==0.12.0
 heic-to-jpg==0.1.8
 help50==3.0.5
@@ -88,6 +90,7 @@ six==1.16.0
 sniffio==1.2.0
 sortedcontainers==2.4.0
 soupsieve==2.3.1
+sql==0.4.0
 SQLAlchemy==1.4.27
 sqlparse==0.4.2
 style50==2.7.5
