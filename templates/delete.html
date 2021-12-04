@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Log In
+{% endblock %}
+
+{% block main %}
+{% if error %}
+<p class=error><strong>Error:</strong> {{ error }}
+    {% endif %}
+<form action="/delete" method="post">
+    <div>
+        <input autocomplete="off" autofocus class="form-control mx-auto w-25 mb-3" id="name" name="name"
+            placeholder="Full Name Associated With Color" type="text">
+    </div>
+    <div>
+        <input autocomplete="off" class="form-control mx-auto w-25 mb-3" id="coloremail" name="coloremail"
+            placeholder="Color Account Email" type="text">
+    </div>
+<button class="btn btn-primary" type="submit">Delete account</button>
+</form>
+{% endblock %}
