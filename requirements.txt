@@ -22,7 +22,6 @@ colorama==0.4.3
 compare50==1.2.4
 cryptography==35.0.0
 cs50==7.0.2
-CS50-VSIX-Client==1.0.0
 cssselect2==0.4.1
 defusedxml==0.7.1
 distlib==0.3.3
