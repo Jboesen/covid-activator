@@ -5,6 +5,7 @@ from functools import wraps
 import os
 import pytesseract
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 try:
     from PIL import Image
 except ImportError:
@@ -113,6 +114,6 @@ def activate_test(email, decrypted, barcode, acc_num):
         driver.find_element_by_class_name(conf_cont_bt_cls).click()
         if driver.find_element_by_class_name("MuiTypography-root jss2 MuiTypography-h1").text == "You’ve activated your kit! Now, collect a sample.":
             return True
-    except nosuchelementexception:
+    except NoSuchElementException:
         return False
     return False
