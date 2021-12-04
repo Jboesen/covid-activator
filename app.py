@@ -262,20 +262,27 @@ def delete():
             error = "Must provide email"
 
         # Query database for username
+        print("Email: " + str(request.form.get("coloremail")))
+        print("name: " + str(request.form.get("name")))
         rows = db.execute("SELECT * FROM users WHERE coloremail = ? AND name = ?",
-                          request.form.get("email"), request.form.get("name"))
+                          request.form.get("coloremail"), request.form.get("name"))
 
         # Display error
         if error:
             flash(error)
             return render_template("delete.html")
-
-        if len(rows) == 1:
+        if len(rows) != 0:
             db.execute("DELETE FROM users WHERE coloremail = ? AND name = ?",
-                       request.form.get("email"), request.form.get("name"))
-
-        flash("Successfully deleted account")
-        return render_template("login.html")
+                       request.form.get("coloremail"), request.form.get("name"))
+            test_query = db.execute("SELECT * FROM users WHERE coloremail = ? AND name = ?",
+                                    request.form.get(
+                                        "coloremail"), request.form.get("name"))
+            if not test_query:
+                flash("Successfully deleted account")
+                return render_template("login.html")
+            else:
+                flash("Something went wrong")
+                return render_template("delete.html")
 
     # User reached route via GET (as by clicking a link or via redirect)
     return render_template("delete.html")
@@ -285,8 +292,8 @@ def delete():
 def set_key(key):
     # https://stackoverflow.com/questions/26613435/python-flask-not-creating-cookie-when-setting-expiration
     resp = make_response(render_template("login.html"))
-    expire_date = datetime.datetime.now()
-    expire_date = expire_date + datetime.timedelta(days=365*4)
+    expire_date = datetime.now()
+    expire_date = expire_date + timedelta(days=365*4)
     resp.set_cookie("key", key, expires=expire_date,
                     secure=True, samesite="Strict")
     return resp
