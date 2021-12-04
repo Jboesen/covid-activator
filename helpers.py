@@ -29,7 +29,7 @@ def login_required(f):
 
 def conv(image_path):
     # https://linuxtut.com/en/c2a85dced32c08aca209/
-    new_name = image_path.replace('heic', 'png')
+    new_name = image_path.replace("heic", "png")
     heif_file = pyheif.read(image_path)
     data = Image.frombytes(
         heif_file.mode,
@@ -64,7 +64,7 @@ def ocr_core(filename):
 
 
 def get_pw(enc_cpw):
-    key = request.cookies.get('key')
+    key = request.cookies.get("key")
     key.encode()
     f = Fernet(key)
     decrypted = f.decrypt(enc_cpw)
@@ -107,5 +107,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     driver.find_element_by_name("kit_barcode").send_keys(barcode)
     driver.find_element_by_name("accession_number").send_keys(acc_num)
     driver.find_element_by_class_name(cont_bt_cls2).click()
-    # driver.find_element_by_class_name(conf_cont_bt_cls).click()
-
+    driver.find_element_by_class_name(conf_cont_bt_cls).click()
+    if driver.find_element_by_class_name("MuiTypography-root jss2 MuiTypography-h1").text == "You’ve activated your kit! Now, collect a sample.":
+        return True
+    return False
