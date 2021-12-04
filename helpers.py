@@ -64,11 +64,14 @@ def ocr_core(filename):
 
 
 def get_pw(enc_cpw):
+    print("get pw")
     key = request.cookies.get("key")
     key.encode()
     f = Fernet(key)
+    print("get pw middle")
     decrypted = f.decrypt(enc_cpw)
     cpw = decrypted.decode("utf-8")
+    print("get pw end")
     return cpw
 
 
