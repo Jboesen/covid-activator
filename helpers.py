@@ -91,26 +91,26 @@ def activate_test(email, decrypted, barcode, acc_num):
     driver.find_element_by_name("password").send_keys(decrypted)
     # login
     login_bt_cls = "MuiButton-fullWidth"
-    driver.find_element_by_class_name(login_bt_cls).click()
+    driver.find_element_by_xpath(login_bt_cls).click()
     # select person
-    person_bt_cls = "jss268"
-    driver.find_element_by_class_name(person_bt_cls).click()
+    person_bt = "//button[@class='MuiButtonBase-root MuiButton-root MuiButton-outlined jss268 MuiButton-outlinedPrimary']"
+    driver.find_element_by_xpath(person_bt).click()
     
     # choose to activate
-    activate_bt = "MuiButton-contained"
-    driver.find_element_by_class_name(activate_bt).click()
+    activate_bt = "//a[@role='button']"
+    driver.find_element_by_xpath(activate_bt).click()
 
     # start survey
-    mui_prim = "MuiButton-containedPrimary"
-    driver.find_element_by_class_name(mui_prim).click()
+    start = "//span[@class='MuiButton-label']"
+    driver.find_element_by_xpath(start).click()
     
     # no symptoms
-    no_symp_bt = "QuizChoice"
-    driver.find_element_by_class_name(no_symp_bt)[1].click()
+    no_symp_bt = "//button[@data-testid='No']"
+    driver.find_element_by_xpath(no_symp_bt)[1].click()
 
     # continue
-    cont_bt = "MuiButton-containedSizeLarge"
-    driver.find_element_by_class_name("MuiButton-containedSizeLarge").click()
+    cont_bt = "//span[contains(text(),'Continue')]"
+    driver.find_element_by_xpath(cont_bt).click()
     
     driver.find_element_by_name("primaryConsentIsAccepted").click()
     driver.find_element_by_name("additionalConsents[0]").click()
@@ -118,20 +118,22 @@ def activate_test(email, decrypted, barcode, acc_num):
     driver.find_element_by_name("additionalConsents[2]").click()
 
     # continue from checkboxes and demos
-    driver.find_element_by_class_name(mui_prim).click()
-    driver.find_element_by_class_name(mui_prim).click()
-    driver.find_element_by_class_name("MuiButton-containedSizeLarge").click()
+    submit = "//button[@type='submit']"
+    driver.find_element_by_xpath(submit).click()
+    driver.find_element_by_xpath(submit).click()
+    conf_bt = "//button[@class='MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary']"
+    driver.find_element_by_xpath(conf_bt).click()
 
     # put in codes
     driver.find_element_by_name("kit_barcode").send_keys(barcode)
     driver.find_element_by_name("accession_number").send_keys(acc_num)
     
     # double confirmation
-    driver.find_element_by_class_name(mui_prim).click()
-    # I can't figure out a better way to to this besides xpath which I don't get
-    for x in driver.find_element_by_class_name(mui_prim):
-        if x.get_attribute("innerHTML") == "Confirm and Continue":
-            x.click()
+    cont_bt = "//span[contains(text(),'Continue')]"
+    driver.find_element_by_xpath(cont_bt).click()
+    double_conf_bt = "//span[normalize-space()='Confirm and Continue']"
+    driver.find_element_by_xpath(double_conf_bt).click()
+    print("So far so good...")
     # see if color is happy
     if driver.find_element_by_class_name("jss2").get_attribute("innerHTML") == "You’ve activated your kit! Now, collect a sample.":
         return True
