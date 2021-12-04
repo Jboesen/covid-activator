@@ -8,6 +8,7 @@ Activate
 {% if confirmation %}
 <h3 class="text-light">Please double-check the barcode and confirmation number:</h3>
 {% endif %}
+<p class="text-light">Do not include "D-" and "C-"; only input the numbers.</p> 
 <form action="/manual" method="post">
     <div class="mb-3">
         {% if barcode %}
@@ -19,7 +20,6 @@ Activate
         {% endif %}
     </div>
     <div class="text-light mb-3">
-        Do not include "D-" and "C-"; only input the numbers.
     <div class="mb-3">
         {% if acc_num %}
         <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="acc_num" name="acc_num"
@@ -40,7 +40,7 @@ Activate
         <a href="https://home.color.com/covid/activation/test-info">here)</a>
         <a> is still accurate.</a>
         </div>
-        <!-- {% else %} -->
+        <!-- else (with jinja removed obv)-->
         <!-- the framework is here to implement a checkbox, but it was being finnicky (not working sometimes for no discernible reason) -->
         <!-- so I commented it out, but I might try to bring it back this winter break -->
         <!-- <input type="checkbox" value="normal" name="normal"> By checking this box, I agree that I'm not experiencing any symptoms of COVID-19 as Color defines 
