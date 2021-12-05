@@ -135,7 +135,7 @@ def activate_test(email, decrypted, barcode, acc_num):
             EC.presence_of_element_located((By.XPATH, no_symp_bt)))
     except TimeoutException:
         return False
-    driver.find_element_by_xpath(no_symp_bt)[1].click()
+    driver.find_element_by_xpath(no_symp_bt).click()
 
     # continue
     cont_bt = "//span[contains(text(),'Continue')]"
