@@ -122,7 +122,6 @@ def manual():
     if request.method == "POST":
         print("manual post")
         # if they want to switch input method
-        # normal check works
         if request.form.get("ocr") is not None:
             return render_template("ocr.html")
         # if request.form.get("normal") is None:
@@ -130,19 +129,22 @@ def manual():
         #     flash("Please use the Color website to activate your test")
         #     return render_template("manual.html")
         # if not normal fill-out
+        # if missing field
         if not request.form.get("barcode") or not request.form.get("acc_num"):
             flash("One or more fields are blank that shouldn't be!")
             return render_template("manual.html")
         barcode = request.form.get("barcode")
         acc_num = request.form.get("acc_num")
+        # gather color login info
         login_info = db.execute(
             "SELECT * FROM users WHERE id = ?", session["user_id"])
         email = login_info[0]["coloremail"]
         colorpw = login_info[0]["colorpw"]
         decrypted = get_pw(colorpw)
-        # # return render_template("activated.html", success=True)
+        # pass to Color and check that it worked
         if activate_test(email, decrypted, barcode, acc_num):
             return render_template("activated.html", success=True)
+        # otherwise it did not work
         return render_template("activated.html")
     return render_template("manual.html")
 
@@ -227,6 +229,7 @@ def register():
         same_names = db.execute("SELECT * FROM users WHERE name = ?", name)
         if len(same_names) == 1:
             error = "Username already exists!"
+        # error checks are done, tell user what we found
         if error:
             flash(error)
             return render_template("register.html")
@@ -272,8 +275,10 @@ def delete():
             flash(error)
             return render_template("delete.html")
         if len(rows) != 0:
+            # delete from table
             db.execute("DELETE FROM users WHERE coloremail = ? AND name = ?",
                        request.form.get("coloremail"), request.form.get("name"))
+            # check that acct is no longer in table
             test_query = db.execute("SELECT * FROM users WHERE coloremail = ? AND name = ?",
                                     request.form.get(
                                         "coloremail"), request.form.get("name"))
@@ -292,8 +297,9 @@ def delete():
 def set_key(key):
     # https://stackoverflow.com/questions/26613435/python-flask-not-creating-cookie-when-setting-expiration
     resp = make_response(render_template("login.html"))
-    expire_date = datetime.now()
-    expire_date = expire_date + timedelta(days=365*4)
+    now = datetime.now()
+    # set cookie to expire four years from now (just a far-future date so it doesn't expire w session)
+    expire_date = now + timedelta(days=365*4)
     resp.set_cookie("key", key, expires=expire_date,
                     secure=True, samesite="Strict")
     return resp
