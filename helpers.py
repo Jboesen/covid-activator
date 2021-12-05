@@ -167,7 +167,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     # wait for confirmation box
     conf_bt = "//button[@class='MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary']"
     try:
-        WebDriverWait(driver, delay).until(
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
             EC.presence_of_element_located((By.XPATH, "//h2[@class='MuiTypography-root jss2 MuiTypography-h3']")))
     except TimeoutException:
         return False
