@@ -80,6 +80,7 @@ def get_pw(enc_cpw):
 
 def activate_test(email, decrypted, barcode, acc_num):
     print("activate_test called")
+    return False
     # https://www.youtube.com/watch?v=rfdNIOYGYVI&t=1114s
 #     op = webdriver.ChromeOption()
 #     op.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
