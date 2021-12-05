@@ -7,7 +7,7 @@ Log In
 {% block main %}
 {% if error %}
 <p class=error><strong>Error:</strong> {{ error }}
-    {% endif %}
+{% endif %}
 <form action="/delete" method="post">
     <div>
         <input autocomplete="off" autofocus class="form-control mx-auto w-25 mb-3" id="name" name="name"
