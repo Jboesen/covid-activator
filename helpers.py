@@ -90,7 +90,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     driver.find_element_by_name("email").send_keys(email)
     driver.find_element_by_name("password").send_keys(decrypted)
     # login
-    login_bt_cls = "MuiButton-fullWidth"
+    login_bt_cls = "//span[@class='MuiButton-label']"
     driver.find_element_by_xpath(login_bt_cls).click()
     # select person
     person_bt = "//button[@class='MuiButtonBase-root MuiButton-root MuiButton-outlined jss268 MuiButton-outlinedPrimary']"
