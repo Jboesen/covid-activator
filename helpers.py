@@ -90,7 +90,8 @@ def activate_test(email, decrypted, barcode, acc_num):
 #         "CHROMEDRIVER_PATH"), chrome_options=op)
     driver = webdriver.Chrome(
         executable_path=os.environ.get("CHROMEDRIVER_PATH"))
-    delay = 3
+    DELAY = 3
+    POLL_FREQUENCY = .2
     driver.get("https://home.color.com/sign-in?next=%2Fcovid%2Factivation")
     driver.find_element_by_name("email").send_keys(email)
     driver.find_element_by_name("password").send_keys(decrypted)
@@ -102,7 +103,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     # select person
     person_bt = "//button[@class='MuiButtonBase-root MuiButton-root MuiButton-outlined jss268 MuiButton-outlinedPrimary']"
     try:
-        WebDriverWait(driver, delay).until(
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
             EC.presence_of_element_located((By.XPATH, person_bt)))
     except TimeoutException:
         return False
@@ -112,7 +113,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     # choose to activate
     activate_bt = "//a[@role='button']"
     try:
-        WebDriverWait(driver, delay).until(
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
             EC.presence_of_element_located((By.XPATH, activate_bt)))
     except TimeoutException:
         return False
@@ -121,7 +122,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     # start survey
     start = "//span[@class='MuiButton-label']"
     try:
-        WebDriverWait(driver, delay).until(
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
             EC.presence_of_element_located((By.XPATH, start)))
     except TimeoutException:
         return False
@@ -130,7 +131,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     # no symptoms
     no_symp_bt = "//button[@data-testid='No']"
     try:
-        WebDriverWait(driver, delay).until(
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
             EC.presence_of_element_located((By.XPATH, no_symp_bt)))
     except TimeoutException:
         return False
@@ -142,7 +143,7 @@ def activate_test(email, decrypted, barcode, acc_num):
 
     # new page
     try:
-        WebDriverWait(driver, delay).until(
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
             EC.presence_of_element_located((By.NAME, "primaryConsentIsAccepted")))
     except TimeoutException:
         return False
@@ -154,21 +155,61 @@ def activate_test(email, decrypted, barcode, acc_num):
     # continue from checkboxes and demos
     submit = "//button[@type='submit']"
     driver.find_element_by_xpath(submit).click()
+
+    # new page
+    # wait for title of next page
+    try:
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
+            EC.presence_of_element_located((By.XPATH, "//h1[@class='MuiTypography-root jss2 MuiTypography-h1']")))
+    except TimeoutException:
+        return False
     driver.find_element_by_xpath(submit).click()
+    # wait for confirmation box
     conf_bt = "//button[@class='MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary']"
+    try:
+        WebDriverWait(driver, delay).until(
+            EC.presence_of_element_located((By.XPATH, "//h2[@class='MuiTypography-root jss2 MuiTypography-h3']")))
+    except TimeoutException:
+        return False
     driver.find_element_by_xpath(conf_bt).click()
 
+    # new page
+    try:
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
+            EC.presence_of_element_located((By.XPATH, "//img[@alt='Tube with barcode']")))
+    except TimeoutException:
+        return False
     # put in codes
+    try:
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
+            EC.presence_of_element_located((By.XPATH, "//img[@alt='Tube with barcode']")))
+    except TimeoutException:
+        return False
     driver.find_element_by_name("kit_barcode").send_keys(barcode)
     driver.find_element_by_name("accession_number").send_keys(acc_num)
 
     # double confirmation
+    # wait for
     cont_bt = "//span[contains(text(),'Continue')]"
     driver.find_element_by_xpath(cont_bt).click()
+    # wait for confirmation box
+    try:
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
+            EC.presence_of_element_located((By.XPATH, "//img[@class='SampleIdentifierConfirmationDialog_Image__1FC_H']")))
+    except TimeoutException:
+        return False
+    # final popup box
     double_conf_bt = "//span[normalize-space()='Confirm and Continue']"
     driver.find_element_by_xpath(double_conf_bt).click()
     print("So far so good...")
+
+    # new page
     # see if color is happy
+    try:
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "jss2")))
+    except TimeoutException:
+        return False
     if driver.find_element_by_class_name("jss2").get_attribute("innerHTML") == "You’ve activated your kit! Now, collect a sample.":
         return True
     return False
