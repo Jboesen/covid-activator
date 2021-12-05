@@ -4,13 +4,16 @@ from flask import redirect, request, session
 from functools import wraps
 import os
 import pytesseract
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 from selenium import webdriver
 try:
     from PIL import Image
 except ImportError:
     import Image
 import pyheif
-import glob
 
 
 def login_required(f):
@@ -85,33 +88,64 @@ def activate_test(email, decrypted, barcode, acc_num):
 #     op.add_argument("--disable-dev-sh-usage")
 #     driver = webdriver.Chrome(executable_path=os.environ.get(
 #         "CHROMEDRIVER_PATH"), chrome_options=op)
-    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
+    driver = webdriver.Chrome(
+        executable_path=os.environ.get("CHROMEDRIVER_PATH"))
+    delay = 3
     driver.get("https://home.color.com/sign-in?next=%2Fcovid%2Factivation")
     driver.find_element_by_name("email").send_keys(email)
     driver.find_element_by_name("password").send_keys(decrypted)
     # login
-    login_bt_cls = "//span[@class='MuiButton-label']"
-    driver.find_element_by_xpath(login_bt_cls).click()
+    login_bt = "//span[@class='MuiButton-label']"
+    driver.find_element_by_xpath(login_bt).click()
+
+    # new page
     # select person
     person_bt = "//button[@class='MuiButtonBase-root MuiButton-root MuiButton-outlined jss268 MuiButton-outlinedPrimary']"
+    try:
+        WebDriverWait(driver, delay).until(
+            EC.presence_of_element_located((By.XPATH, person_bt)))
+    except TimeoutException:
+        return False
     driver.find_element_by_xpath(person_bt).click()
-    
+
+    # new page
     # choose to activate
     activate_bt = "//a[@role='button']"
+    try:
+        WebDriverWait(driver, delay).until(
+            EC.presence_of_element_located((By.XPATH, activate_bt)))
+    except TimeoutException:
+        return False
     driver.find_element_by_xpath(activate_bt).click()
 
     # start survey
     start = "//span[@class='MuiButton-label']"
+    try:
+        WebDriverWait(driver, delay).until(
+            EC.presence_of_element_located((By.XPATH, start)))
+    except TimeoutException:
+        return False
     driver.find_element_by_xpath(start).click()
-    
+
     # no symptoms
     no_symp_bt = "//button[@data-testid='No']"
+    try:
+        WebDriverWait(driver, delay).until(
+            EC.presence_of_element_located((By.XPATH, no_symp_bt)))
+    except TimeoutException:
+        return False
     driver.find_element_by_xpath(no_symp_bt)[1].click()
 
     # continue
     cont_bt = "//span[contains(text(),'Continue')]"
     driver.find_element_by_xpath(cont_bt).click()
-    
+
+    # new page
+    try:
+        WebDriverWait(driver, delay).until(
+            EC.presence_of_element_located((By.NAME, "primaryConsentIsAccepted")))
+    except TimeoutException:
+        return False
     driver.find_element_by_name("primaryConsentIsAccepted").click()
     driver.find_element_by_name("additionalConsents[0]").click()
     driver.find_element_by_name("additionalConsents[1]").click()
@@ -127,7 +161,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     # put in codes
     driver.find_element_by_name("kit_barcode").send_keys(barcode)
     driver.find_element_by_name("accession_number").send_keys(acc_num)
-    
+
     # double confirmation
     cont_bt = "//span[contains(text(),'Continue')]"
     driver.find_element_by_xpath(cont_bt).click()
