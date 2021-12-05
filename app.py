@@ -78,7 +78,7 @@ def ocr():
         if file and allowed_file(file.filename):
             # file is a FileStorage object
             # store FileStorage into uploads folder
-            storage_loc = open(f"uploads/{file.filename}", "w+")
+            storage_loc = open(f"uploads/{file.filename}", "wb")
             content = file.read()
             storage_loc.write(content)
             pathname = storage_loc.name
