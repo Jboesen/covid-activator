@@ -3,6 +3,7 @@ from cryptography.fernet import Fernet
 from flask import redirect, request, session
 from functools import wraps
 import os
+import pyheif
 import pytesseract
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -13,7 +14,6 @@ try:
     from PIL import Image
 except ImportError:
     import Image
-import pyheif
 
 
 def login_required(f):
@@ -34,6 +34,7 @@ def conv(image_path):
     # https://linuxtut.com/en/c2a85dced32c08aca209/
     new_name = image_path.replace("heic", "png")
     heif_file = pyheif.read(image_path)
+    # having read image, get new image
     data = Image.frombytes(
         heif_file.mode,
         heif_file.size,
@@ -42,7 +43,7 @@ def conv(image_path):
         heif_file.mode,
         heif_file.stride,
     )
-    # "PNG"?
+    # store it
     data.save(new_name)
 
 
@@ -59,6 +60,7 @@ def ocr_core(filename):
         # delete original .heic
         os.remove(filename)
         filename = split_tup[0] + ".png"
+    
     text = pytesseract.image_to_string(Image.open(
         filename))  # We'll use Pillow's Image class to open the image and pytesseract to detect the string in the image
     # delete new file
@@ -67,28 +69,18 @@ def ocr_core(filename):
 
 
 def get_pw(enc_cpw):
-    print("get pw")
     key = request.cookies.get("key")
+    # turn key into bytes
     key.encode()
     f = Fernet(key)
-    print("get pw middle")
     decrypted = f.decrypt(enc_cpw)
     cpw = decrypted.decode("utf-8")
-    print("get pw end")
     return cpw
 
 
 def activate_test(email, decrypted, barcode, acc_num):
     print("activate_test called")
-    return False
     # https://www.youtube.com/watch?v=rfdNIOYGYVI&t=1114s
-#     op = webdriver.ChromeOption()
-#     op.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-#     op.add_argument("--headless")
-#     op.add_argument("--no-sandbox")
-#     op.add_argument("--disable-dev-sh-usage")
-#     driver = webdriver.Chrome(executable_path=os.environ.get(
-#         "CHROMEDRIVER_PATH"), chrome_options=op)
     driver = webdriver.Chrome(
         executable_path=os.environ.get("CHROMEDRIVER_PATH"))
     DELAY = 3
@@ -208,9 +200,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     # see if color is happy
     try:
         WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "jss2")))
+            EC.presence_of_element_located((By.XPATH, "//img[@alt='Closed Covid Tube']")))
     except TimeoutException:
         return False
-    if driver.find_element_by_class_name("jss2").get_attribute("innerHTML") == "You’ve activated your kit! Now, collect a sample.":
-        return True
-    return False
+    return True
