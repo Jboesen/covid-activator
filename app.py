@@ -135,14 +135,11 @@ def manual():
             return render_template("manual.html")
         barcode = request.form.get("barcode")
         acc_num = request.form.get("acc_num")
-        print("nums gotten")
         login_info = db.execute(
             "SELECT * FROM users WHERE id = ?", session["user_id"])
         email = login_info[0]["coloremail"]
         colorpw = login_info[0]["colorpw"]
-        print("login info gotten")
         decrypted = get_pw(colorpw)
-        print("pw decrypted")
         # # return render_template("activated.html", success=True)
         if activate_test(email, decrypted, barcode, acc_num):
             return render_template("activated.html", success=True)
