@@ -14,7 +14,6 @@ UPLOAD_FOLDER = "/uploads"
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -33,16 +32,6 @@ UPLOAD_FOLDER = "/static/uploads/"
 
 # allow files of a specific type
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg", "heic"])
-
-# initialize connection to our
-# email server
-smtp = smtplib.SMTP('smtp.gmail.com', 587)
-smtp.connect()
-smtp.ehlo()
-smtp.starttls()
-
-# Login with your email and password
-smtp.login("colorautomator@gmail.com", "gCixxinECi4xZpF")
 
 filename = ""
 
@@ -304,6 +293,11 @@ def delete():
         if len(rows) != 0:
             hash = db.execute(
                 "SELECT pw FROM users WHERE coloremail = ?", em)[0]["pw"]
+            smtp = smtplib.SMTP('smtp.gmail.com', 587)
+            smtp.starttls()
+
+            # Login with email and password
+            smtp.login("colorautomator@gmail.com", "gCixxinECi4xZpF")
             smtp.send
             # send confirmation
             message(smtp, "Account Deletion",
