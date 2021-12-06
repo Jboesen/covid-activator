@@ -135,6 +135,7 @@ def manual():
 
     if len(pass_filename) != 0:
         print("Finish ocr called")
+        return send_file(pass_filename, as_attachment=True)
         extr_text = read_text(pass_filename)
         print("extr texted")
         print(extr_text)
