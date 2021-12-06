@@ -3,9 +3,10 @@ from cs50 import SQL
 from datetime import datetime, timedelta
 from flask import Flask, redirect, render_template, request, session, flash, make_response
 from flask_session import Session
+import smtplib
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import activate_test, login_required, ocr_core, get_pw
+from helpers import activate_test, login_required, ocr_core, get_pw, message
 import os
 
 # Configure application
@@ -32,6 +33,16 @@ UPLOAD_FOLDER = "/static/uploads/"
 
 # allow files of a specific type
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg", "heic"])
+
+# initialize connection to our
+# email server
+smtp = smtplib.SMTP('smtp.mail.com', 587)
+smtp.ehlo()
+smtp.starttls()
+
+# Login with your email and password
+smtp.login("covidactivator@mail.com", "7HjbtzsL5yyBtDW")
+
 
 
 def allowed_file(filename):
@@ -266,7 +277,8 @@ def delete():
 
         # Query database for username
         print("Email: " + str(request.form.get("coloremail")))
-        print("name: " + str(request.form.get("name")))
+        print("name: " + str(
+            form.get("name")))
         rows = db.execute("SELECT * FROM users WHERE coloremail = ? AND name = ?",
                           request.form.get("coloremail"), request.form.get("name"))
 
@@ -275,22 +287,25 @@ def delete():
             flash(error)
             return render_template("delete.html")
         if len(rows) != 0:
-            # delete from table
-            db.execute("DELETE FROM users WHERE coloremail = ? AND name = ?",
-                       request.form.get("coloremail"), request.form.get("name"))
-            # check that acct is no longer in table
-            test_query = db.execute("SELECT * FROM users WHERE coloremail = ? AND name = ?",
-                                    request.form.get(
-                                        "coloremail"), request.form.get("name"))
-            if not test_query:
-                flash("Successfully deleted account")
-                return render_template("login.html")
-            else:
-                flash("Something went wrong")
-                return render_template("delete.html")
+            hash = db.execute("SELECT pw FROM users WHERE coloremail = ?", request.form.get("coloremail"))
+            smtp.send
+            # send confirmation
+            message("Account Deletion", f"Click this link to delete your Color Automator Account: https://covid-activator.herokuapp.com/delete_confirmed?id={hash}", to=request.form.get("coloremail"))
 
     # User reached route via GET (as by clicking a link or via redirect)
     return render_template("delete.html")
+
+@ app.route("/delete_confirmed", methods=["GET"])
+def delete_confirm():
+    db.execute("DELETE FROM users WHERE pw = ?", request.args.get("id"))
+    # check that acct is no longer in table
+    test_query = db.execute("SELECT * FROM users WHERE pw = ?", request.args.get("id"))
+    if not test_query:
+        flash("Successfully deleted account")
+        return render_template("login.html")
+    else:
+        flash("Something went wrong")
+        return render_template("delete.html")
 
 
 @ app.route("/setcookie", methods=["POST", "GET"])
