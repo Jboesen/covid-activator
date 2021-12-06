@@ -1,7 +1,6 @@
 from cryptography.fernet import Fernet
 from cs50 import SQL
 from datetime import datetime, timedelta
-from flask import Flask, redirect, render_template, request, session, flash, make_response
 from flask_session import Session
 import smtplib
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -82,7 +81,7 @@ def ocr():
         file = request.files["file"]
         # if no file is selected
         if file.filename == "":
-            flash("No file selected1")
+            flash("No file selected")
             return render_template("ocr.html")
         if file and allowed_file(file.filename):
             # file is a FileStorage object
@@ -93,8 +92,9 @@ def ocr():
             pathname = storage_loc.name
 
             # call the OCR function on it
-            extr_text = ocr_core(pathname)
-
+            filename = ocr_core(pathname)
+            flash("Loading...")
+            
             # tidy up
             storage_loc.close()
 
@@ -123,7 +123,7 @@ def ocr():
         flash("Something went wrong...")
         return render_template("ocr.html")
     return render_template("ocr.html")
-
+    
 
 @ app.route("/manual", methods=["GET", "POST"])
 @ login_required
