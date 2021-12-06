@@ -72,6 +72,7 @@ def ocr():
             return render_template("ocr.html")
         file = request.files["file"]
         # if no file is selected
+        print
         if file.filename == "":
             flash("No file selected")
             return render_template("ocr.html")
@@ -82,13 +83,13 @@ def ocr():
             content = file.read()
             storage_loc.write(content)
             # call the OCR function on it
+            print(f"store_loc: {storage_loc}")
             pass_filename = ocr_core(storage_loc.name)
-            print(pass_filename)
+            print(f"p_f before manual: {pass_filename}")
             storage_loc.close()
             flash("Loading...")
             print("ab to render manual")
             return redirect(f"/manual?pass_filename={pass_filename}")
-            return render_template("ocr.html")
         flash("Something went wrong...")
         return render_template("ocr.html")
     return render_template("ocr.html")
