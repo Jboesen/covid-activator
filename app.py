@@ -1,7 +1,7 @@
 from cryptography.fernet import Fernet
 from cs50 import SQL
 from datetime import datetime, timedelta
-from flask import Flask, redirect, render_template, request, session, flash, make_response, send_file
+from flask import Flask, redirect, render_template, request, session, flash, make_response
 from flask_session import Session
 import smtplib
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
@@ -135,7 +135,6 @@ def manual():
 
     if len(pass_filename) != 0:
         print("Finish ocr called")
-        return send_file(pass_filename, as_attachment=True)
         extr_text = read_text(pass_filename)
         print("extr texted")
         print(extr_text)
