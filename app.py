@@ -33,7 +33,7 @@ UPLOAD_FOLDER = "/static/uploads/"
 # allow files of a specific type
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg", "heic"])
 
-filename = ""
+glob_filename = ""
 
 
 def allowed_file(filename):
@@ -84,7 +84,9 @@ def ocr():
             content = file.read()
             storage_loc.write(content)
             # call the OCR function on it
-            filename = ocr_core(storage_loc.name)
+            global glob_filename
+            glob_filename = ocr_core(storage_loc.name)
+            print(glob_filename)
             storage_loc.close()
             flash("Loading...")
             print("ab to render manual")
@@ -98,8 +100,9 @@ def ocr():
 @ app.route("/manual", methods=["GET", "POST"])
 @ login_required
 def manual():
+    global glob_filename
     print("manual...")
-    print(filename)
+    print(glob_filename)
     if request.method == "POST":
         print("manual post")
         # if they want to switch input method
@@ -128,9 +131,9 @@ def manual():
         # otherwise it did not work
         return render_template("activated.html")
 
-    if len(filename) != 0:
+    if len(glob_filename) != 0:
         print("Finish ocr called")
-        extr_text = read_text(filename)
+        extr_text = read_text(glob_filename)
         print("extr texted")
         # get barcode and acc_num
         barcode = ""
