@@ -19,7 +19,7 @@ try:
     from PIL import Image
 except ImportError:
     import Image
-    
+
 
 def login_required(f):
     """
@@ -213,18 +213,20 @@ def activate_test(email, decrypted, barcode, acc_num):
     return True
 
 # send our email message 'msg' to our boss
-def message(subject, text, to):
-	
-	# build message contents
-	msg = MIMEMultipart()
-	
-	# Add Subject
-	msg['Subject'] = subject
-	
-	# Add text contents
-	msg.attach(MIMEText(text))
 
-	smtp.sendmail(from_addr="covidactivator@mail.com",
-			to_addrs=to, msg=msg.as_string())
 
-	smtp.quit()
+def message(smtp, subject, text, to):
+
+    # build message contents
+    msg = MIMEMultipart()
+
+    # Add Subject
+    msg['Subject'] = subject
+
+    # Add text contents
+    msg.attach(MIMEText(text))
+
+    smtp.sendmail(from_addr="covidactivator@mail.com",
+                  to_addrs=to, msg=msg.as_string())
+
+    smtp.quit()
