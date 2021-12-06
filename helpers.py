@@ -67,6 +67,10 @@ def ocr_core(filename):
         os.remove(filename)
         filename = split_tup[0] + ".png"
         print("convrted")
+    return filename
+
+
+def read_text(filename):
     text = pytesseract.image_to_string(Image.open(
         filename))  # We'll use Pillow's Image class to open the image and pytesseract to detect the string in the image
     print("changed to text")
@@ -226,7 +230,7 @@ def message(smtp, subject, text, to):
     # Add text contents
     msg.attach(MIMEText(text))
 
-    smtp.sendmail(from_addr="colorautomator@gmail.com",
+    smtp.sendmail(from_addr="covidactivator@mail.com",
                   to_addrs=to, msg=msg.as_string())
 
     smtp.quit()
