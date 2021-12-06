@@ -213,9 +213,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     return True
 
 # send our email message 'msg' to our boss
-def message(subject,
-			text, img,
-			attachment, to):
+def message(subject, text, to):
 	
 	# build message contents
 	msg = MIMEMultipart()
