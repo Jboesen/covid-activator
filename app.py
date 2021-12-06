@@ -156,8 +156,8 @@ def manual():
         print("after finding")
         print(acc_num)
         print(barcode)
-        if not (barcode or acc_num):
-            flash("Barcode or acc_num not found")
+        if not (barcode and acc_num):
+            flash("Barcode and acc_num not found")
             return render_template("manual.html", confirmation=True)
         print("after if")
         # Basically user makes sure their input is right
