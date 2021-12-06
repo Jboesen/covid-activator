@@ -278,13 +278,14 @@ def delete():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         error = None
+        em = request.form.get("coloremail")
 
         # Ensure username was submitted
         if not request.form.get("name"):
             error = "Must provide name"
 
         # Ensure password was submitted
-        elif not request.form.get("coloremail"):
+        elif not em:
             error = "Must provide email"
 
         # Query database for username
@@ -292,7 +293,7 @@ def delete():
         print("name: " + str(
             request.form.get("name")))
         rows = db.execute("SELECT * FROM users WHERE coloremail = ? AND name = ?",
-                          request.form.get("coloremail"), request.form.get("name"))
+                          em, request.form.get("name"))
 
         # Display error
         if error:
@@ -300,11 +301,11 @@ def delete():
             return render_template("delete.html")
         if len(rows) != 0:
             hash = db.execute(
-                "SELECT pw FROM users WHERE coloremail = ?", request.form.get("coloremail"))[0]["pw"]
+                "SELECT pw FROM users WHERE coloremail = ?", em)[0]["pw"]
             smtp.send
             # send confirmation
             message(smtp, "Account Deletion",
-                    f"Click this link to delete your Color Automator Account: https://color-automator.herokuapp.com/delete_confirmed?id={hash}", request.form.get("coloremail"))
+                    f"Click this link to delete your Color Automator Account: https://color-automator.herokuapp.com/delete_confirmed?id={hash}&em={em}")
             flash("Click the link we sent to you to complete deletion.")
             return render_template("delete.html")
 
@@ -317,7 +318,7 @@ def delete_confirm():
     db.execute("DELETE FROM users WHERE pw = ?", request.args.get("id"))
     # check that acct is no longer in table
     test_query = db.execute(
-        "SELECT * FROM users WHERE pw = ?", request.args.get("id"))
+        "SELECT * FROM users WHERE pw = ? and coloremail = ?", request.args.get("id"), request.args.get("em"))
     if not test_query:
         flash("Successfully deleted account")
         return render_template("login.html")
