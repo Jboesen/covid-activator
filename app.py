@@ -290,7 +290,7 @@ def delete():
             hash = db.execute("SELECT pw FROM users WHERE coloremail = ?", request.form.get("coloremail"))
             smtp.send
             # send confirmation
-            message("Account Deletion", f"Click this link to delete your Color Automator Account: https://covid-activator.herokuapp.com/delete_confirmed?id={hash}", to=request.form.get("coloremail"))
+            message("Account Deletion", f"Click this link to delete your Color Automator Account: https://covid-activator.herokuapp.com/delete_confirmed?id={hash}", request.form.get("coloremail"))
             flash("Click the link we sent to you to complete deletion.")
             return render_template("delete.html")
 
