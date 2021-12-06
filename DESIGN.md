@@ -2,11 +2,13 @@ This project is implemented on Flask. The website has essentially one function, 
 
 To do this, I had to store Color login information because otherwise, the app would be less convenient than simply using Color, and so would defeat the whole point. Of course, storing passwords is tricky business, so I decided to encrypt the password. At first, I was going to do this in the SQL database, itself, but I quickly realized that that would not work, so I instead opted to encrypt it on the server and pass the relevant information where it needed to go: pass the key to the client machine and pass the encrypted password into the database. I used cryptography and a Fernet key because they were the most widely-documented ways of server-side encryption. I decided to use a cookie to store the key because it seemed like it would be the most convenient and discreet mechanism: the user gains access to that key without even knowing it. Manually notating the key like a password would not necessarily work, either, because the keys are very long strings of random characters. Also, having an actual password gives the app an added layer of security.  
 
-As a temporary solution, I added an account deletion page in case a user forgets their password. 
+As a temporary solution, I added an account deletion page in case a user forgets their password. It sends an email to the user where they can click a link and delete their account. 
 
 Once I had done that, I had to get the string of login information. I decided to use text recognition, simply because it is a pain to input 15 random numbers into the boxes. To do this, I used Tesseract, which is an open-source library supported by Google's photo-recognition software. That meant that it would probably be more accurate. However, I soon found out that this library did not like .heic's, so I had to convert the files. I did this using another open-source library, pyheif, and reading the image.
 
-I also decided to put these more under-the-hood type functions in a separate python file simply because I decided that would make the app.py more navigable. 
+I also decided to put these more under-the-hood type functions in a separate python file simply because I decided that would make the app.py more navigable.
+
+As the photo is being recognized, you'll notice it gets passed to manual. This is to circumvent Heroku's timeout requirement: if I just wait for the return of the text, the process gets stopped, so I split it up. 
 
 After the photo was recognized, I sent the text back to a modified version of manual.html to avoid repetitively coding another page (or popup box) with text input and a confirm button. In case of errors, I decided to use flash() because 1) I found the redirecting to a separate page with the mad cat in Finance to be particularly annoying and inconvenient, and 2) flash() was a very convenient integrated way to display errors. 
 
