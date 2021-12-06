@@ -226,7 +226,7 @@ def message(smtp, subject, text, to):
     # Add text contents
     msg.attach(MIMEText(text))
 
-    smtp.sendmail(from_addr="covidactivator@mail.com",
+    smtp.sendmail(from_addr="colorautomator@gmail.com",
                   to_addrs=to, msg=msg.as_string())
 
     smtp.quit()
