@@ -290,7 +290,7 @@ def delete():
             smtp.send
             # send confirmation
             message(smtp, "Account Deletion",
-                    f"Click this link to delete your Color Automator Account: https://covid-activator.herokuapp.com/delete_confirmed?id={hash}", request.form.get("coloremail"))
+                    f"Click this link to delete your Color Automator Account: https://color-automator.herokuapp.com/delete_confirmed?id={hash}", request.form.get("coloremail"))
             flash("Click the link we sent to you to complete deletion.")
             return render_template("delete.html")
 
