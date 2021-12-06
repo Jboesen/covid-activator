@@ -91,40 +91,41 @@ def ocr():
             content = file.read()
             storage_loc.write(content)
             pathname = storage_loc.name
-
             # call the OCR function on it
             filename = ocr_core(pathname)
-            flash("Loading...")
-            
-            # tidy up
             storage_loc.close()
-
-            # get barcode and acc_num
-            barcode = ""
-            D_loc = extr_text.find("D-")
-            if D_loc != -1:
-                if len(extr_text[D_loc + 2:]) > 9:
-                    barcode = extr_text[D_loc+2:D_loc+12]
-                else:
-                    barcode = extr_text[D_loc + 2:]
-
-            acc_num = ""
-            C_loc = extr_text.find("C-")
-            if C_loc != -1:
-                if len(extr_text[C_loc + 2:]) > 4:
-                    acc_num = extr_text[C_loc+2:C_loc+7]
-                else:
-                    acc_num = extr_text[C_loc+2:]
-
-            if not (barcode or acc_num):
-                flash("Barcode or acc_num not found")
-                return render_template("manual.html", confirmation=True)
-            # Basically user makes sure their input is right
-            return render_template("manual.html", barcode=barcode, acc_num=acc_num, confirmation=True)
+            flash("Loading...")
+            finish_ocr(filename)
+            return render_template("ocr.html")
         flash("Something went wrong...")
         return render_template("ocr.html")
     return render_template("ocr.html")
-    
+
+
+def finish_ocr(filename):
+    # get barcode and acc_num
+    barcode = ""
+    D_loc = extr_text.find("D-")
+    if D_loc != -1:
+        if len(extr_text[D_loc + 2:]) > 9:
+            barcode = extr_text[D_loc+2:D_loc+12]
+        else:
+            barcode = extr_text[D_loc + 2:]
+
+    acc_num = ""
+    C_loc = extr_text.find("C-")
+    if C_loc != -1:
+        if len(extr_text[C_loc + 2:]) > 4:
+            acc_num = extr_text[C_loc+2:C_loc+7]
+        else:
+            acc_num = extr_text[C_loc+2:]
+
+    if not (barcode or acc_num):
+        flash("Barcode or acc_num not found")
+        return render_template("manual.html", confirmation=True)
+    # Basically user makes sure their input is right
+    return render_template("manual.html", barcode=barcode, acc_num=acc_num, confirmation=True)
+
 
 @ app.route("/manual", methods=["GET", "POST"])
 @ login_required
