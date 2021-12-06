@@ -278,7 +278,7 @@ def delete():
         # Query database for username
         print("Email: " + str(request.form.get("coloremail")))
         print("name: " + str(
-            form.get("name")))
+            request.form.get("name")))
         rows = db.execute("SELECT * FROM users WHERE coloremail = ? AND name = ?",
                           request.form.get("coloremail"), request.form.get("name"))
 
@@ -291,6 +291,8 @@ def delete():
             smtp.send
             # send confirmation
             message("Account Deletion", f"Click this link to delete your Color Automator Account: https://covid-activator.herokuapp.com/delete_confirmed?id={hash}", to=request.form.get("coloremail"))
+            flash("Click the link we sent to you to complete deletion.")
+            return render_template("delete.html")
 
     # User reached route via GET (as by clicking a link or via redirect)
     return render_template("delete.html")
