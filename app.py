@@ -73,7 +73,6 @@ def ocr():
             return render_template("ocr.html")
         file = request.files["file"]
         # if no file is selected
-        print
         if file.filename == "":
             flash("No file selected")
             return render_template("ocr.html")
@@ -84,12 +83,12 @@ def ocr():
             content = file.read()
             storage_loc.write(content)
             # call the OCR function on it
-            print(f"store_loc: {storage_loc}")
+            # print(f"store_loc: {storage_loc}")
             pass_filename = ocr_core(storage_loc.name)
-            print(f"p_f before manual: {pass_filename}")
+            # print(f"p_f before manual: {pass_filename}")
             storage_loc.close()
             flash("Loading...")
-            print("ab to render manual")
+            # print("ab to render manual")
             return redirect(f"/manual?pass_filename={pass_filename}")
         flash("Something went wrong...")
         return render_template("ocr.html")
@@ -99,15 +98,15 @@ def ocr():
 @ app.route("/manual", methods=["GET", "POST"])
 @ login_required
 def manual():
-    print("manual...")
+    # print("manual...")
     if request.args.get("pass_filename"):
         pass_filename = str(request.args.get("pass_filename"))
     else:
         pass_filename = ""
-        print("No pass_filename")
+        # print("No pass_filename")
     print(pass_filename)
     if request.method == "POST":
-        print("manual post")
+        # print("manual post")
         # if they want to switch input method
         if request.form.get("ocr") is not None:
             return render_template("ocr.html")
@@ -135,11 +134,11 @@ def manual():
         return render_template("activated.html")
 
     if len(pass_filename) != 0:
-        print("Finish ocr called")
+        # print("Finish ocr called")
         # return send_file(pass_filename, as_attachment=True)
         extr_text = read_text(pass_filename)
-        print("extr texted")
-        print(extr_text)
+        # print("extr texted")
+        # print(extr_text)
         # get barcode and acc_num
         barcode = ""
         D_loc = extr_text.find("D-")
@@ -157,13 +156,13 @@ def manual():
             else:
                 acc_num = extr_text[C_loc+2:]
 
-        print("after finding")
-        print(acc_num)
-        print(barcode)
+        # print("after finding")
+#         print(acc_num)
+#         print(barcode)
         if not (barcode or acc_num):
             flash("Barcode or acc_num not found")
             return render_template("manual.html", confirmation=True)
-        print("after if")
+#         print("after if")
         # Basically user makes sure their input is right
         flash("Done!")
         return render_template("manual.html", barcode=barcode, acc_num=acc_num, confirmation=True)
@@ -287,9 +286,9 @@ def delete():
             error = "Must provide email"
 
         # Query database for username
-        print("Email: " + str(request.form.get("coloremail")))
-        print("name: " + str(
-            request.form.get("name")))
+#         print("Email: " + str(request.form.get("coloremail")))
+#         print("name: " + str(
+#         request.form.get("name")))
         rows = db.execute("SELECT * FROM users WHERE coloremail = ? AND name = ?",
                           em, request.form.get("name"))
 
