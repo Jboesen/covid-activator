@@ -307,7 +307,7 @@ def delete():
             smtp.login("colorautomator@gmail.com", "gCixxinECi4xZpF")
             smtp.send
             # send confirmation
-            rbytes = token_bytes([nbytes=None])
+            rbytes = token_bytes(10)
             message(smtp, "Account Deletion",
                     f"Click this link to delete your Color Automator Account: https://color-automator.herokuapp.com/delete_confirmed?id={hash}&em={em}&b={rbytes}", em)
             flash("Click the link we sent to you to complete deletion.")
