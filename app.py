@@ -84,7 +84,6 @@ def ocr():
             content = file.read()
             storage_loc.write(content)
             # call the OCR function on it
-            global filename
             filename = ocr_core(storage_loc.name)
             storage_loc.close()
             flash("Loading...")
@@ -159,8 +158,7 @@ def manual():
         # Basically user makes sure their input is right
         flash("Done!")
         return render_template("manual.html", barcode=barcode, acc_num=acc_num, confirmation=True)
-        flash("Oops, something went wrong.")
-        return render_template("manual.html")
+    return render_template("manual.html")
 
 
 @ app.route("/login", methods=["GET", "POST"])
