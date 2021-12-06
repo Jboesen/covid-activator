@@ -3,6 +3,7 @@ from cs50 import SQL
 from datetime import datetime, timedelta
 from flask import Flask, redirect, render_template, request, session, flash, make_response, send_file
 from flask_session import Session
+from secrets import token_bytes
 import smtplib
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -306,8 +307,9 @@ def delete():
             smtp.login("colorautomator@gmail.com", "gCixxinECi4xZpF")
             smtp.send
             # send confirmation
+            rbytes = token_bytes([nbytes=None])
             message(smtp, "Account Deletion",
-                    f"Click this link to delete your Color Automator Account: https://color-automator.herokuapp.com/delete_confirmed?id={hash}&em={em}", em)
+                    f"Click this link to delete your Color Automator Account: https://color-automator.herokuapp.com/delete_confirmed?id={hash}&em={em}&b={rbytes}", em)
             flash("Click the link we sent to you to complete deletion.")
             return render_template("delete.html")
 
