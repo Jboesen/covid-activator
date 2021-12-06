@@ -7,7 +7,6 @@ import smtplib
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import activate_test, login_required, ocr_core, get_pw, message
-import os
 
 # Configure application
 app = Flask(__name__)
@@ -36,13 +35,12 @@ ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg", "heic"])
 
 # initialize connection to our
 # email server
-smtp = smtplib.SMTP('smtp.mail.com', 587)
+smtp = smtplib.SMTP('smtp.gmail.com', 587)
 smtp.ehlo()
 smtp.starttls()
 
 # Login with your email and password
-smtp.login("covidactivator@mail.com", "7HjbtzsL5yyBtDW")
-
+smtp.login("colorautomator@gmail.com", "gCixxinECi4xZpF")
 
 
 def allowed_file(filename):
@@ -287,21 +285,25 @@ def delete():
             flash(error)
             return render_template("delete.html")
         if len(rows) != 0:
-            hash = db.execute("SELECT pw FROM users WHERE coloremail = ?", request.form.get("coloremail"))
+            hash = db.execute(
+                "SELECT pw FROM users WHERE coloremail = ?", request.form.get("coloremail"))[0]["pw"]
             smtp.send
             # send confirmation
-            message("Account Deletion", f"Click this link to delete your Color Automator Account: https://covid-activator.herokuapp.com/delete_confirmed?id={hash}", request.form.get("coloremail"))
+            message(smtp, "Account Deletion",
+                    f"Click this link to delete your Color Automator Account: https://covid-activator.herokuapp.com/delete_confirmed?id={hash}", request.form.get("coloremail"))
             flash("Click the link we sent to you to complete deletion.")
             return render_template("delete.html")
 
     # User reached route via GET (as by clicking a link or via redirect)
     return render_template("delete.html")
 
+
 @ app.route("/delete_confirmed", methods=["GET"])
 def delete_confirm():
     db.execute("DELETE FROM users WHERE pw = ?", request.args.get("id"))
     # check that acct is no longer in table
-    test_query = db.execute("SELECT * FROM users WHERE pw = ?", request.args.get("id"))
+    test_query = db.execute(
+        "SELECT * FROM users WHERE pw = ?", request.args.get("id"))
     if not test_query:
         flash("Successfully deleted account")
         return render_template("login.html")
