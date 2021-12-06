@@ -3,7 +3,7 @@ from cs50 import SQL
 from datetime import datetime, timedelta
 from flask import Flask, redirect, render_template, request, session, flash, make_response, send_file
 from flask_session import Session
-from secrets import token_bytes
+from secrets import token_urlsafe
 import smtplib
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -64,6 +64,8 @@ def ocr():
         # check if okie-dokie
         # like I said in the html, this is finnicky so I am holding off on putting it in there
         # if request.form.get("normal") is None:
+        #     This is the first of many print statements you will see; I left them in because
+        #     I plan to fix this up during winter break, so these will save a little time.
         #     print("normal")
         #     flash("Please use the Color website to activate your test")
         #     return render_template("ocr.html")
@@ -297,18 +299,17 @@ def delete():
             flash(error)
             return render_template("delete.html")
         if len(rows) != 0:
-            hash = db.execute(
-                "SELECT pw FROM users WHERE coloremail = ?", em)[0]["pw"]
             smtp = smtplib.SMTP('smtp.gmail.com', 587)
             smtp.starttls()
-
             # Login with email and password
             smtp.login("colorautomator@gmail.com", "gCixxinECi4xZpF")
             smtp.send
             # send confirmation
-            rbytes = token_bytes(10)
+            reset_key = token_urlsafe(25)
+            db.execute(
+                "UPDATE users SET reset_key = ?", reset_key)
             message(smtp, "Account Deletion",
-                    f"Click this link to delete your Color Automator Account: https://color-automator.herokuapp.com/delete_confirmed?id={hash}&em={em}&b={rbytes}", em)
+                    f"Click this link to delete your Color Automator Account: https://color-automator.herokuapp.com/delete_confirmed?reset_key={reset_key}", em)
             flash("Click the link we sent to you to complete deletion.")
             return render_template("delete.html")
 
@@ -318,10 +319,11 @@ def delete():
 
 @ app.route("/delete_confirmed", methods=["GET"])
 def delete_confirm():
-    db.execute("DELETE FROM users WHERE pw = ?", request.args.get("id"))
+    reset_key = request.args.get("reset_key")
+    db.execute("DELETE FROM users WHERE pw = ?", reset_key)
     # check that acct is no longer in table
     test_query = db.execute(
-        "SELECT * FROM users WHERE pw = ? and coloremail = ?", request.args.get("id"), request.args.get("em"))
+        "SELECT * FROM users WHERE reset_key = ?", reset_key)
     if not test_query:
         flash("Successfully deleted account")
         return render_template("login.html")
