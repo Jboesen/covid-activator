@@ -229,4 +229,4 @@ def message(subject,
 	smtp.sendmail(from_addr="covidactivator@mail.com",
 			to_addrs=to, msg=msg.as_string())
 
-    smtp.quit()
+	smtp.quit()
