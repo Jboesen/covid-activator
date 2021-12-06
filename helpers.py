@@ -216,7 +216,7 @@ def activate_test(email, decrypted, barcode, acc_num):
 
 
 def message(smtp, subject, text, to):
-    # https://www.geeksforgeeks.org/how-to-send-automated-email-messages-in-python/
+
     # build message contents
     msg = MIMEMultipart()
 
