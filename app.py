@@ -6,7 +6,7 @@ from flask_session import Session
 import smtplib
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import activate_test, login_required, ocr_core, get_pw, message
+from helpers import activate_test, login_required, ocr_core, get_pw, message, read_text
 
 # Configure application
 app = Flask(__name__)
@@ -104,6 +104,7 @@ def ocr():
 
 def finish_ocr(filename):
     # get barcode and acc_num
+    extr_text = read_text(filename)
     barcode = ""
     D_loc = extr_text.find("D-")
     if D_loc != -1:
