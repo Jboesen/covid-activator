@@ -33,8 +33,6 @@ UPLOAD_FOLDER = "/static/uploads/"
 # allow files of a specific type
 ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg", "heic"])
 
-glob_filename = ""
-
 
 def allowed_file(filename):
     # https://stackabuse.com/pytesseract-simple-python-optical-character-recognition/
@@ -84,13 +82,12 @@ def ocr():
             content = file.read()
             storage_loc.write(content)
             # call the OCR function on it
-            global glob_filename
-            glob_filename = ocr_core(storage_loc.name)
-            print(glob_filename)
+            pass_filename = ocr_core(storage_loc.name)
+            print(pass_filename)
             storage_loc.close()
             flash("Loading...")
             print("ab to render manual")
-            return redirect("/manual")
+            return redirect(f"/manual?pass_filename={pass_filename}")
             return render_template("ocr.html")
         flash("Something went wrong...")
         return render_template("ocr.html")
@@ -100,9 +97,13 @@ def ocr():
 @ app.route("/manual", methods=["GET", "POST"])
 @ login_required
 def manual():
-    global glob_filename
     print("manual...")
-    print(glob_filename)
+    if request.args.get("pass_filename"):
+        pass_filename = str(request.args.get("pass_filename"))
+    else:
+        pass_filename = ""
+        print("No pass_filename")
+    print(pass_filename)
     if request.method == "POST":
         print("manual post")
         # if they want to switch input method
@@ -131,9 +132,9 @@ def manual():
         # otherwise it did not work
         return render_template("activated.html")
 
-    if len(glob_filename) != 0:
+    if len(pass_filename) != 0:
         print("Finish ocr called")
-        extr_text = read_text(glob_filename)
+        extr_text = read_text(pass_filename)
         print("extr texted")
         # get barcode and acc_num
         barcode = ""
