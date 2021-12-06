@@ -65,7 +65,7 @@ def ocr():
         # like I said in the html, this is finnicky so I am holding off on putting it in there
         # if request.form.get("normal") is None:
         #     This is the first of many print statements you will see; I left them in because
-        #     I plan to fix this up during winter break, so these will save a little time.
+        #     I plan to imrpove this up during winter break.
         #     print("normal")
         #     flash("Please use the Color website to activate your test")
         #     return render_template("ocr.html")
