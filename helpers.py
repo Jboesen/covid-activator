@@ -64,7 +64,8 @@ def ocr_core(filename):
     if split_tup[1] == ".heic":
         conv(filename)
         # delete original .heic
-        os.remove(filename)
+        # os.remove(filename)
+        # don't need to remove bc heroku does it for you
         filename = split_tup[0] + ".png"
         print("convrted")
     return filename
@@ -74,8 +75,8 @@ def read_text(filename):
     text = pytesseract.image_to_string(Image.open(
         filename))  # We'll use Pillow's Image class to open the image and pytesseract to detect the string in the image
     print("changed to text")
+    # don't need to remove bc heroku does it for you
     # delete new file
-    os.remove(filename)
     return text
 
 
