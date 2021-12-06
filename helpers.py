@@ -1,5 +1,9 @@
 
 from cryptography.fernet import Fernet
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
 from flask import redirect, request, session
 from functools import wraps
 import os
@@ -10,11 +14,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium import webdriver
+import smtplib
 try:
     from PIL import Image
 except ImportError:
     import Image
-
+    
 
 def login_required(f):
     """
@@ -206,3 +211,22 @@ def activate_test(email, decrypted, barcode, acc_num):
     except TimeoutException:
         return False
     return True
+
+# send our email message 'msg' to our boss
+def message(subject,
+			text, img,
+			attachment, to):
+	
+	# build message contents
+	msg = MIMEMultipart()
+	
+	# Add Subject
+	msg['Subject'] = subject
+	
+	# Add text contents
+	msg.attach(MIMEText(text))
+
+	smtp.sendmail(from_addr="covidactivator@mail.com",
+			to_addrs=to, msg=msg.as_string())
+
+    smtp.quit()
