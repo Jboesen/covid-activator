@@ -11,3 +11,5 @@ If you prefer to manually enter your codes, you can click or tap "manual" and "t
 If these methods work, you will be redirected to a page saying "Kit activated successfully!". Otherwise, you will get an error or be redirected to "Something went wrong."
 
 Because this uses Selenium, you cannot execute this on your machine unless you adjust the code to specify where to find a chromedriver and Google Chrome. It only works on the linked website, which has a Chromedriver built-in. 
+
+Video: https://youtu.be/Wa7sI4I0LqI
