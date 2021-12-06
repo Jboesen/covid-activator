@@ -213,8 +213,10 @@ def activate_test(email, decrypted, barcode, acc_num):
     try:
         WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
             EC.presence_of_element_located((By.XPATH, "//img[@alt='Closed Covid Tube']")))
-    except TimeoutException:
+    except:
+        driver.quit()
         return False
+    driver.quit()
     return True
 
 # send our email message 'msg' to our boss
