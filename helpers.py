@@ -67,14 +67,14 @@ def ocr_core(filename):
         # os.remove(filename)
         # don't need to remove bc heroku does it for you
         filename = split_tup[0] + ".png"
-        print("convrted")
+#         print("convrted")
     return filename
 
 
 def read_text(filename):
     text = pytesseract.image_to_string(Image.open(
         filename))  # We'll use Pillow's Image class to open the image and pytesseract to detect the string in the image
-    print("changed to text")
+#     print("changed to text")
     # don't need to remove bc heroku does it for you
     # delete new file
     return text
@@ -91,7 +91,7 @@ def get_pw(enc_cpw):
 
 
 def activate_test(email, decrypted, barcode, acc_num):
-    print("activate_test called")
+#     print("activate_test called")
     # https://www.youtube.com/watch?v=rfdNIOYGYVI&t=1114s
     driver = webdriver.Chrome(
         executable_path=os.environ.get("CHROMEDRIVER_PATH"))
