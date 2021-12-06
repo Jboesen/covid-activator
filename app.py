@@ -42,6 +42,8 @@ smtp.starttls()
 # Login with your email and password
 smtp.login("colorautomator@gmail.com", "gCixxinECi4xZpF")
 
+filename = ""
+
 
 def allowed_file(filename):
     # https://stackabuse.com/pytesseract-simple-python-optical-character-recognition/
@@ -90,47 +92,23 @@ def ocr():
             storage_loc = open(f"uploads/{file.filename}", "wb")
             content = file.read()
             storage_loc.write(content)
-            pathname = storage_loc.name
             # call the OCR function on it
-            filename = ocr_core(pathname)
+            global filename
+            filename = ocr_core(storage_loc.name)
             storage_loc.close()
             flash("Loading...")
-            finish_ocr(filename)
+            print("ab to render manual")
+            return redirect("/manual")
             return render_template("ocr.html")
         flash("Something went wrong...")
         return render_template("ocr.html")
     return render_template("ocr.html")
 
 
-def finish_ocr(filename):
-    # get barcode and acc_num
-    extr_text = read_text(filename)
-    barcode = ""
-    D_loc = extr_text.find("D-")
-    if D_loc != -1:
-        if len(extr_text[D_loc + 2:]) > 9:
-            barcode = extr_text[D_loc+2:D_loc+12]
-        else:
-            barcode = extr_text[D_loc + 2:]
-
-    acc_num = ""
-    C_loc = extr_text.find("C-")
-    if C_loc != -1:
-        if len(extr_text[C_loc + 2:]) > 4:
-            acc_num = extr_text[C_loc+2:C_loc+7]
-        else:
-            acc_num = extr_text[C_loc+2:]
-
-    if not (barcode or acc_num):
-        flash("Barcode or acc_num not found")
-        return render_template("manual.html", confirmation=True)
-    # Basically user makes sure their input is right
-    return render_template("manual.html", barcode=barcode, acc_num=acc_num, confirmation=True)
-
-
 @ app.route("/manual", methods=["GET", "POST"])
 @ login_required
 def manual():
+    print("manual...")
     if request.method == "POST":
         print("manual post")
         # if they want to switch input method
@@ -158,7 +136,40 @@ def manual():
             return render_template("activated.html", success=True)
         # otherwise it did not work
         return render_template("activated.html")
-    return render_template("manual.html")
+
+    if len(filename) != 0:
+        print("Finish ocr called")
+        extr_text = read_text(filename)
+        print("extr texted")
+        # get barcode and acc_num
+        barcode = ""
+        D_loc = extr_text.find("D-")
+        if D_loc != -1:
+            if len(extr_text[D_loc + 2:]) > 9:
+                barcode = extr_text[D_loc+2:D_loc+12]
+            else:
+                barcode = extr_text[D_loc + 2:]
+
+        acc_num = ""
+        C_loc = extr_text.find("C-")
+        if C_loc != -1:
+            if len(extr_text[C_loc + 2:]) > 4:
+                acc_num = extr_text[C_loc+2:C_loc+7]
+            else:
+                acc_num = extr_text[C_loc+2:]
+
+        print("after finding")
+        print(acc_num)
+        print(barcode)
+        if not (barcode or acc_num):
+            flash("Barcode or acc_num not found")
+            return render_template("manual.html", confirmation=True)
+        print("after if")
+        # Basically user makes sure their input is right
+        flash("Done!")
+        return render_template("manual.html", barcode=barcode, acc_num=acc_num, confirmation=True)
+        flash("Oops, something went wrong.")
+        return render_template("manual.html")
 
 
 @ app.route("/login", methods=["GET", "POST"])
