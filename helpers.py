@@ -51,6 +51,7 @@ def ocr_core(filename):
     """
     This function will handle the core OCR processing of images.
     """
+    print("top of ocr")
     # filename is a file obj
     # check for .heics
     split_tup = os.path.splitext(filename)
@@ -60,9 +61,10 @@ def ocr_core(filename):
         # delete original .heic
         os.remove(filename)
         filename = split_tup[0] + ".png"
-    
+        print("convrted")
     text = pytesseract.image_to_string(Image.open(
         filename))  # We'll use Pillow's Image class to open the image and pytesseract to detect the string in the image
+    print("changed to text")
     # delete new file
     os.remove(filename)
     return text
