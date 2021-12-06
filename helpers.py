@@ -56,7 +56,7 @@ def ocr_core(filename):
     """
     This function will handle the core OCR processing of images.
     """
-    print("top of ocr")
+#     print("top of ocr")
     # filename is a file obj
     # check for .heics
     split_tup = os.path.splitext(filename)
@@ -206,7 +206,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     # final popup box
     double_conf_bt = "//span[normalize-space()='Confirm and Continue']"
     driver.find_element_by_xpath(double_conf_bt).click()
-    print("So far so good...")
+#     print("So far so good...")
 
     # new page
     # see if color is happy
