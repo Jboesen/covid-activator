@@ -19,6 +19,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["SECURITY_EMAIL_SENDER"] = "colorautomator@gmail.com"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
@@ -36,6 +37,7 @@ ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg", "heic"])
 # initialize connection to our
 # email server
 smtp = smtplib.SMTP('smtp.gmail.com', 587)
+smtp.connect()
 smtp.ehlo()
 smtp.starttls()
 
