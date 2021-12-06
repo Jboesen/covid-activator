@@ -1,7 +1,7 @@
 from cryptography.fernet import Fernet
 from cs50 import SQL
 from datetime import datetime, timedelta
-from flask import Flask, redirect, render_template, request, session, flash, make_response
+from flask import Flask, redirect, render_template, request, session, flash, make_response, send_file
 from flask_session import Session
 import smtplib
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
