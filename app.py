@@ -136,6 +136,7 @@ def manual():
         print("Finish ocr called")
         extr_text = read_text(pass_filename)
         print("extr texted")
+        print(extr_text)
         # get barcode and acc_num
         barcode = ""
         D_loc = extr_text.find("D-")
