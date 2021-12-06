@@ -99,6 +99,7 @@ def ocr():
 @ login_required
 def manual():
     print("manual...")
+    print(filename)
     if request.method == "POST":
         print("manual post")
         # if they want to switch input method
