@@ -320,7 +320,7 @@ def delete():
 @ app.route("/delete_confirmed", methods=["GET"])
 def delete_confirm():
     reset_key = request.args.get("reset_key")
-    db.execute("DELETE FROM users WHERE pw = ?", reset_key)
+    db.execute("DELETE FROM users WHERE reset_key = ?", reset_key)
     # check that acct is no longer in table
     test_query = db.execute(
         "SELECT * FROM users WHERE reset_key = ?", reset_key)
