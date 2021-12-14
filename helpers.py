@@ -116,16 +116,16 @@ def activate_test(email, decrypted, barcode, acc_num):
     driver.find_element_by_xpath(person_bt).click()
     print("selected person worked")
     
-    # new page
-    # select Harvard
-#     harvard_bt = "//p[normalize-space()='Harvard']"
-#     try:
-#         WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
-#             EC.presence_of_element_located((By.XPATH, harvard_bt)))
-#     except TimeoutException:
-#         return False
-#     driver.find_element_by_xpath(harvard_bt).click()
-#     print("Harvard worked")
+#     new page
+#     select Harvard
+    harvard_bt = "//p[normalize-space()='Harvard']"
+    try:
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
+            EC.presence_of_element_located((By.XPATH, harvard_bt)))
+    except TimeoutException:
+        return False
+    driver.find_element_by_xpath(harvard_bt).click()
+    print("Harvard worked")
 
 
     # new page
