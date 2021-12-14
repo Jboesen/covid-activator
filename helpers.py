@@ -113,7 +113,8 @@ def activate_test(email, decrypted, barcode, acc_num):
     except TimeoutException:
         return False
     driver.find_element_by_xpath(harvard_bt).click()
-
+    print("Harvard worked")
+    
     # new page
     # select person
     person_bt = "//button[@class='MuiButtonBase-root MuiButton-root MuiButton-outlined jss268 MuiButton-outlinedPrimary']"
@@ -123,6 +124,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     except TimeoutException:
         return False
     driver.find_element_by_xpath(person_bt).click()
+    print("selected person worked")
 
     # new page
     # choose to activate
