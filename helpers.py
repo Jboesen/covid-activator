@@ -95,7 +95,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     # https://www.youtube.com/watch?v=rfdNIOYGYVI&t=1114s
     driver = webdriver.Chrome(
         executable_path=os.environ.get("CHROMEDRIVER_PATH"))
-    DELAY = 3
+    DELAY = 5
     POLL_FREQUENCY = .2
     driver.get("https://home.color.com/sign-in?next=%2Fcovid%2Factivation")
     driver.find_element_by_name("email").send_keys(email)
@@ -138,6 +138,7 @@ def activate_test(email, decrypted, barcode, acc_num):
         return False
     driver.find_element_by_xpath(activate_bt).click()
 
+    print("activate button clicked")
     # start survey
     start = "//span[@class='MuiButton-label']"
     try:
@@ -146,6 +147,7 @@ def activate_test(email, decrypted, barcode, acc_num):
     except TimeoutException:
         return False
     driver.find_element_by_xpath(start).click()
+    print("start button clicked")
 
     # no symptoms
     no_symp_bt = "//button[@data-testid='No']"
