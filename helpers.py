@@ -103,6 +103,16 @@ def activate_test(email, decrypted, barcode, acc_num):
     # login
     login_bt = "//span[@class='MuiButton-label']"
     driver.find_element_by_xpath(login_bt).click()
+    
+    # new page
+    # select Harvard
+    harvard_bt = "//button[@class='MuiButtonBase-root MuiButton-root MuiButton-outlined jss289 jss290 jss287 visible-population MuiButton-outlinedPrimary']"
+    try:
+        WebDriverWait(driver, DELAY, poll_frequency=POLL_FREQUENCY).until(
+            EC.presence_of_element_located((By.XPATH, harvard_bt)))
+    except TimeoutException:
+        return False
+    driver.find_element_by_xpath(harvard_bt).click()
 
     # new page
     # select person
