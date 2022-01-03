@@ -1,6 +1,6 @@
 # Automatic Color COVID Test Activator
 
-Many people affiliated with CS50 are affiliated with Harvard, so you will have to take Color's COVID tests. You have to sign in, go to the same website, and check the same boxes week after week. It almost seems like a computer could do it for you... 
+Harvard affiliates have to take Color's COVID tests. You have to sign in, go to the same website, and check the same boxes week after week. It almost seems like a computer could do it for you... 
 
 Of course a computer could do it for you. With this website, you can scan the C-... and D-... numbers on the blue sheet of paper that comes with a test, and the computer does the rest. 
 
@@ -9,5 +9,3 @@ To use it, go to https://covid-activator.herokuapp.com/register to create an acc
 Because this uses Selenium, you cannot execute this on your machine unless you adjust the code to specify where to find a chromedriver and Google Chrome. It only works on the linked website, which has a Chromedriver built-in. 
 
 If you forget your password, go to the login page, click "Delete Account," and follow the instructions. 
-
-Video: https://youtu.be/Wa7sI4I0LqI
